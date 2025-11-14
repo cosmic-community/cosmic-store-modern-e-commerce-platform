@@ -32,6 +32,12 @@ export function getCart(): Cart {
   }
 }
 
+// Changed: Added getCartItemCount function to calculate total item count
+export function getCartItemCount(): number {
+  const cart = getCart()
+  return cart.items.reduce((total, item) => total + item.quantity, 0)
+}
+
 export function saveCart(cart: Cart): void {
   if (typeof window === 'undefined') return
 
