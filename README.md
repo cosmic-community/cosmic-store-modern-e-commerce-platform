@@ -1,8 +1,8 @@
-# ✨ Cosmic Store - Modern E-commerce Platform
+# ✨ Smart Lead - Modern E-commerce Platform
 
 ![App Preview](https://imgix.cosmicjs.com/808bc900-c1a3-11f0-9757-a1b2350abfc3-photo-1505740420928-5e560c06d30e-1763156842032.jpg?w=1200&h=300&fit=crop&auto=format,compress)
 
-A stunning, fully animated e-commerce platform built with Next.js 16 and powered by Cosmic CMS. This modern storefront features smooth animations, an intuitive shopping experience, and a beautiful product showcase.
+A stunning, fully animated e-commerce platform built with Next.js 16 and powered by Cosmic CMS. This modern storefront features smooth animations, an intuitive shopping experience, and a powerful admin dashboard for product management.
 
 ## ✨ Features
 
@@ -16,28 +16,13 @@ A stunning, fully animated e-commerce platform built with Next.js 16 and powered
 - ✨ **Smooth Animations** - Engaging micro-interactions powered by Framer Motion
 - 🎯 **SEO Optimized** - Built-in metadata and structured data
 - 🔒 **Type-Safe** - Full TypeScript implementation with strict typing
+- 👨‍💼 **Admin Dashboard** - Full product management capabilities
+- 📞 **Contact Information** - Easy access to phone and email
 
-## Clone this Project
+## 📞 Contact Information
 
-## Clone this Project
-
-Want to create your own version of this project with all the content and structure? Clone this Cosmic bucket and code repository to get started instantly:
-
-[![Clone this Project](https://img.shields.io/badge/Clone%20this%20Project-29abe2?style=for-the-badge&logo=cosmic&logoColor=white)](https://app.cosmicjs.com/projects/new?clone_bucket=6917a2cae7349beda291cfb7&clone_repository=6917a468e7349beda291d00e)
-
-## Prompts
-
-This application was built using the following prompts to generate the content structure and code:
-
-### Content Model Prompt
-
-> "create a nice creative and animated ecommece store"
-
-### Code Generation Prompt
-
-> "Based on the content model I created for "create a nice creative and animated ecommece store", now build a complete web application that showcases this content. Include a modern, responsive design with proper navigation, content display, and user-friendly interface."
-
-The app has been tailored to work with your existing Cosmic content structure and includes all the features requested above.
+- **Phone**: +971 52 580 8102
+- **Email**: enochdop@gmail.com
 
 ## 🚀 Technologies Used
 
@@ -75,6 +60,15 @@ bun dev
 
 5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
+## 👨‍💼 Admin Dashboard
+
+Access the admin dashboard at `/admin` to:
+- View all products
+- Add new products
+- Edit existing products
+- Delete products
+- Manage inventory
+
 ## 📚 Cosmic SDK Examples
 
 ### Fetching Products
@@ -96,29 +90,21 @@ const { objects: featured } = await cosmic.objects
   })
   .props(['id', 'title', 'slug', 'metadata'])
   .depth(1)
-
-// Get products by category
-const { objects: categoryProducts } = await cosmic.objects
-  .find({ 
-    type: 'products',
-    'metadata.category': categoryId 
-  })
-  .props(['id', 'title', 'slug', 'metadata'])
-  .depth(1)
 ```
 
-### Fetching Categories
+### Creating Products
 
 ```typescript
-// Get all categories sorted by display order
-const { objects: categories } = await cosmic.objects
-  .find({ type: 'categories' })
-  .props(['id', 'title', 'slug', 'metadata'])
-
-const sortedCategories = categories.sort((a, b) => {
-  const orderA = a.metadata?.display_order || 999
-  const orderB = b.metadata?.display_order || 999
-  return orderA - orderB
+// Create a new product
+await cosmic.objects.insertOne({
+  title: 'New Product',
+  type: 'products',
+  metadata: {
+    product_name: 'New Product',
+    description: 'Product description',
+    price: 99.99,
+    stock_quantity: 50
+  }
 })
 ```
 
@@ -144,14 +130,6 @@ This application leverages your Cosmic content structure:
 - Category Image (file)
 - Display Order (number)
 
-### Key Features
-
-- **Object Relationships**: Products are linked to categories using depth parameter
-- **File Management**: Multiple product images with imgix optimization
-- **Featured Products**: Special showcase for highlighted items
-- **Sale Pricing**: Automatic sale badge when sale_price is set
-- **Stock Tracking**: Real-time stock availability display
-
 ## 🚀 Deployment
 
 ### Deploy to Vercel
@@ -164,16 +142,6 @@ This application leverages your Cosmic content structure:
    - `COSMIC_WRITE_KEY`
 4. Deploy!
 
-### Deploy to Netlify
-
-1. Push your code to GitHub
-2. Import your repository in Netlify
-3. Build settings:
-   - Build command: `bun run build`
-   - Publish directory: `.next`
-4. Add environment variables in Netlify dashboard
-5. Deploy!
-
 ## 📝 Environment Variables
 
 Required environment variables for deployment:
@@ -185,16 +153,6 @@ COSMIC_WRITE_KEY=your-write-key
 ```
 
 Get these values from your Cosmic dashboard under Bucket Settings > API Access.
-
-## 🎯 Key Implementation Details
-
-- Server-side data fetching for optimal performance
-- Image optimization using imgix parameters (2x resolution for retina displays)
-- TypeScript strict mode with comprehensive type definitions
-- Responsive design with mobile-first approach
-- Smooth animations using Framer Motion
-- SEO-friendly with dynamic metadata
-- Error handling for empty states
 
 ## 📖 Learn More
 

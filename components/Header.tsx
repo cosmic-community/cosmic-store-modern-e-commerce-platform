@@ -11,6 +11,7 @@ interface HeaderProps {
 
 export default function Header({ categories }: HeaderProps) {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,7 +33,7 @@ export default function Header({ categories }: HeaderProps) {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link href="/" className="text-2xl font-bold text-blue-600 hover:scale-105 transition-transform duration-200">
-            Cosmic Store
+            Smart Lead
           </Link>
           
           <div className="hidden md:flex items-center gap-8">
@@ -95,6 +96,30 @@ export default function Header({ categories }: HeaderProps) {
                 </motion.div>
               </AnimatePresence>
             </div>
+
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Link 
+                href="/admin" 
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Admin
+              </Link>
+            </motion.div>
+
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Link 
+                href="/contact" 
+                className="text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                Contact
+              </Link>
+            </motion.div>
           </div>
 
           <div className="flex items-center gap-4">
@@ -125,8 +150,36 @@ export default function Header({ categories }: HeaderProps) {
                 0
               </motion.span>
             </motion.button>
+
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-gray-700 hover:text-blue-600"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
           </div>
         </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden py-4 border-t border-gray-200">
+            <Link href="/" className="block py-2 text-gray-700 hover:text-blue-600">Home</Link>
+            <Link href="/admin" className="block py-2 text-gray-700 hover:text-blue-600">Admin</Link>
+            <Link href="/contact" className="block py-2 text-gray-700 hover:text-blue-600">Contact</Link>
+            {categories.map((category: Category) => (
+              <Link
+                key={category.id}
+                href={`/categories/${category.slug}`}
+                className="block py-2 pl-4 text-gray-700 hover:text-blue-600"
+              >
+                {category.metadata?.category_name || category.title}
+              </Link>
+            ))}
+          </div>
+        )}
       </nav>
     </motion.header>
   )

@@ -9,8 +9,8 @@ import { getAllCategories } from '@/lib/cosmic'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Cosmic Store - Modern E-Commerce',
-  description: 'Shop the latest products with our modern e-commerce platform',
+  title: 'Smart Lead - Your Premier E-Commerce Destination',
+  description: 'Discover quality products across fashion, electronics, and home living at Smart Lead',
 }
 
 export default async function RootLayout({
