@@ -1,4 +1,5 @@
 import { createBucketClient } from '@cosmicjs/sdk'
+import type { Category, Product } from '@/types'
 
 export const cosmic = createBucketClient({
   bucketSlug: process.env.COSMIC_BUCKET_SLUG as string,
@@ -14,7 +15,7 @@ export async function getAllProducts() {
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1)
     
-    return response.objects
+    return response.objects as Product[]
   } catch (error) {
     if (hasStatus(error) && error.status === 404) {
       return []
@@ -33,7 +34,7 @@ export async function getFeaturedProducts() {
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1)
     
-    return response.objects
+    return response.objects as Product[]
   } catch (error) {
     if (hasStatus(error) && error.status === 404) {
       return []
@@ -52,7 +53,7 @@ export async function getProductBySlug(slug: string) {
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1)
     
-    return response.object
+    return response.object as Product | null
   } catch (error) {
     if (hasStatus(error) && error.status === 404) {
       return null
@@ -71,7 +72,7 @@ export async function getProductsByCategory(categoryId: string) {
       .props(['id', 'title', 'slug', 'metadata'])
       .depth(1)
     
-    return response.objects
+    return response.objects as Product[]
   } catch (error) {
     if (hasStatus(error) && error.status === 404) {
       return []
@@ -88,7 +89,7 @@ export async function getAllCategories() {
       .props(['id', 'title', 'slug', 'metadata'])
     
     // Sort by display_order
-    const categories = response.objects.sort((a, b) => {
+    const categories = (response.objects as Category[]).sort((a: Category, b: Category) => {
       const orderA = a.metadata?.display_order || 999
       const orderB = b.metadata?.display_order || 999
       return orderA - orderB
@@ -112,7 +113,7 @@ export async function getCategoryBySlug(slug: string) {
       })
       .props(['id', 'title', 'slug', 'metadata'])
     
-    return response.object
+    return response.object as Category | null
   } catch (error) {
     if (hasStatus(error) && error.status === 404) {
       return null

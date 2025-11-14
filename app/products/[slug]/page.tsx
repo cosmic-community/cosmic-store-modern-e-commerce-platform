@@ -3,6 +3,7 @@ import { getProductBySlug, getAllProducts } from '@/lib/cosmic'
 import { notFound } from 'next/navigation'
 import ProductDetail from '@/components/ProductDetail'
 import type { Metadata } from 'next'
+import type { Product } from '@/types'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -11,7 +12,7 @@ interface Props {
 export async function generateStaticParams() {
   const products = await getAllProducts()
   
-  return products.map((product) => ({
+  return products.map((product: Product) => ({
     slug: product.slug,
   }))
 }

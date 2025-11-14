@@ -3,6 +3,7 @@ import { getCategoryBySlug, getProductsByCategory, getAllCategories } from '@/li
 import { notFound } from 'next/navigation'
 import ProductGrid from '@/components/ProductGrid'
 import type { Metadata } from 'next'
+import type { Category } from '@/types'
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -11,7 +12,7 @@ interface Props {
 export async function generateStaticParams() {
   const categories = await getAllCategories()
   
-  return categories.map((category) => ({
+  return categories.map((category: Category) => ({
     slug: category.slug,
   }))
 }

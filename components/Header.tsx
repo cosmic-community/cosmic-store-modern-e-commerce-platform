@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { getAllCategories } from '@/lib/cosmic'
+import type { Category } from '@/types'
 
 export default async function Header() {
   const categories = await getAllCategories()
@@ -30,7 +31,7 @@ export default async function Header() {
               
               <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                 <div className="py-2">
-                  {categories.map((category) => (
+                  {categories.map((category: Category) => (
                     <Link
                       key={category.id}
                       href={`/categories/${category.slug}`}
