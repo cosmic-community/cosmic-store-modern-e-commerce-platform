@@ -3,15 +3,21 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import type { Category } from '@/types'
+import { getCartItemCount } from '@/lib/cart'
 
 interface HeaderProps {
   categories: Category[]
 }
 
 export default function Header({ categories }: HeaderProps) {
+  const router = useRouter()
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [cartCount, setCartCount] = useState(0)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,6 +26,28 @@ export default function Header({ categories }: HeaderProps) {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    // Initial cart count
+    setCartCount(getCartItemCount())
+    
+    // Listen for cart updates
+    const handleCartUpdate = () => {
+      setCartCount(getCartItemCount())
+    }
+    
+    window.addEventListener('cartUpdated', handleCartUpdate)
+    return () => window.removeEventListener('cartUpdated', handleCartUpdate)
+  }, [])
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`)
+      setSearchOpen(false)
+      setSearchQuery('')
+    }
+  }
 
   return (
     <motion.header
@@ -126,6 +154,7 @@ export default function Header({ categories }: HeaderProps) {
             <motion.button
               whileHover={{ scale: 1.1, rotate: 5 }}
               whileTap={{ scale: 0.9 }}
+              onClick={() => setSearchOpen(!searchOpen)}
               className="p-2 text-gray-700 hover:text-blue-600"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,23 +162,27 @@ export default function Header({ categories }: HeaderProps) {
               </svg>
             </motion.button>
             
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="p-2 text-gray-700 hover:text-blue-600 relative"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg>
-              <motion.span
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 500, damping: 15 }}
-                className="absolute top-0 right-0 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+            <Link href="/cart">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="p-2 text-gray-700 hover:text-blue-600 relative"
               >
-                0
-              </motion.span>
-            </motion.button>
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                </svg>
+                {cartCount > 0 && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 15 }}
+                    className="absolute top-0 right-0 bg-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+                  >
+                    {cartCount}
+                  </motion.span>
+                )}
+              </motion.button>
+            </Link>
 
             {/* Mobile menu button */}
             <button
@@ -163,12 +196,49 @@ export default function Header({ categories }: HeaderProps) {
           </div>
         </div>
 
+        {/* Search Bar */}
+        <AnimatePresence>
+          {searchOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden"
+            >
+              <form onSubmit={handleSearch} className="py-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search products..."
+                    className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+                    autoFocus
+                  />
+                  <button
+                    type="submit"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-gray-200">
             <Link href="/" className="block py-2 text-gray-700 hover:text-blue-600">Home</Link>
             <Link href="/admin" className="block py-2 text-gray-700 hover:text-blue-600">Admin</Link>
             <Link href="/contact" className="block py-2 text-gray-700 hover:text-blue-600">Contact</Link>
+            <Link href="/cart" className="block py-2 text-gray-700 hover:text-blue-600">
+              Cart ({cartCount})
+            </Link>
             {categories.map((category: Category) => (
               <Link
                 key={category.id}
